@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const { protect, authorize } = require('../middleware/auth');
+const c = require('../controllers/adminController');
+router.use(protect, authorize('admin'));
+router.get('/users', c.listUsers);
+router.patch('/users/:id/toggle', c.toggleUser);
+router.delete('/users/:id', c.deleteUser);
+router.get('/jobs', c.listJobs);
+router.delete('/jobs/:id', c.removeJob);
+module.exports = router;

@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const { protect, authorize } = require('../middleware/auth');
+const upload = require('../middleware/upload');
+const c = require('../controllers/resumeController');
+router.use(protect);
+router.post('/upload', authorize('student'), upload.single('resume'), c.uploadResume);
+router.get('/me', authorize('student'), c.downloadMine);
+router.delete('/me', authorize('student'), c.deleteMine);
+router.get('/student/:studentId', authorize('recruiter', 'admin'), c.downloadForStudent);
+module.exports = router;

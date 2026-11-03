@@ -1,0 +1,15 @@
+const router = require('express').Router();
+const { body } = require('express-validator');
+const validate = require('../middleware/validate');
+const { protect, authorize } = require('../middleware/auth');
+const Application = require('../models/Application');
+const c = require('../controllers/applicationController');
+router.use(protect);
+router.post('/', authorize('student'), [body('jobId').isMongoId().withMessage('Valid job id required')], validate, c.apply);
+router.get('/mine', authorize('student'), c.mine);
+router.get('/recruiter', authorize('recruiter'), c.recruiterList);
+router.get('/all', authorize('admin'), c.adminList);
+router.get('/:id', c.getOne);
+router.patch('/:id/status', authorize('recruiter', 'admin'), [body('status').isIn(Application.STATUSES).withMessage('Invalid status')], validate, c.updateStatus);
+router.delete('/:id', authorize('admin'), c.remove);
+module.exports = router;
